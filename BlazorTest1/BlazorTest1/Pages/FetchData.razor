@@ -1,0 +1,86 @@
+﻿@page "/fetchdata"
+@using BlazorTest1.Service.Cat
+@using BlazorTest1.Service.Cat.Models
+@using BlazorTest1.Service.Bitcoin
+@using BlazorTest1.Service.Bitcoin.Models
+@inject ICatService CatService
+@inject IBitcoinService BitcoinService
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>API Testing</h1>
+
+<p>This component demonstrates fetching data from an API.</p>
+
+<div>
+    <button class="btn btn-primary" @onclick="FetchCatFact">Give me a fact</button>
+    <button class="btn btn-primary" @onclick="FetchBitcoinPrice">Give me the Bitcoin price</button>
+</div>
+
+@if (catFact == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>Cat facts</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fact</th>
+                <th>Length</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@catFact.Fact</td>
+                <td>@catFact.Length</td>
+            </tr>
+        </tbody>
+    </table>
+}
+@if (bitcoinPrice == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>Bitcoin price</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Currency</th>
+                <th>Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@bitcoinPrice.code</td>
+                <td>@bitcoinPrice.rate</td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    private CatFact? catFact;
+    private BitcoinPrice? bitcoinPrice;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await FetchCatFact();
+        await FetchBitcoinPrice();
+    }
+
+
+    private async Task FetchCatFact()
+    {
+        catFact = await CatService.GetRandomCatFact();
+    }
+
+    private async Task FetchBitcoinPrice()
+    {
+        bitcoinPrice = await BitcoinService.GetEuroResult();
+    }
+}
